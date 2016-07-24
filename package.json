@@ -1,0 +1,16 @@
+{
+  "name": "ajax-chat",
+  "version": "1.0.0",
+  "description": "Ajax chat implementation + mongo db",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "94117nl",
+  "license": "MIT",
+  "dependencies": {
+    "mongoose": "^4.5.5",
+    "express": "^4.14.0",
+    "body-parser": "1.15.2"
+  }
+}

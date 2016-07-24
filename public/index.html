@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Ajax chat</title>
+</head>
+<body>
+	<ul id="messages"></ul>
+	<div>
+		<div>
+			<input type="text" placeholder="Your name" id="nameInput">
+		</div>
+		<textarea id="text" cols="30" rows="10"></textarea>
+		<input type="button" value="Send" id="textSubmit">
+	</div>
+</body>
+<script type="text/javascript">
+	(function() {
+		var nameInput = document.getElementById('nameInput'),
+			messages = document.getElementById('messages'),
+			text = document.getElementById('text'),
+			textSubmit = document.getElementById('textSubmit');
+
+		textSubmit.onclick = function() {
+			userName = nameInput.value || 'User1';
+			var data = {
+				name: userName,
+				text: text.value
+			};
+
+			text.value = '';
+			ajaxRequest({
+				method: 'POST',
+				url: '/messages',
+				data: data
+			})
+
+			var latestPost = document.createElement('li');
+			latestPost.innerText = data.name + ': ' + data.text;
+			messages.appendChild(latestPost);
+		};
+
+		var ajaxRequest = function(options) {
+			var url = options.url || '/',
+				method = options.method || 'GET',
+				callback = options.callback || function() {},
+				data = options.data || {},
+				xmlHttp = new XMLHttpRequest();
+
+			xmlHttp.open(method, url, true);
+			xmlHttp.setRequestHeader('Content-Type', 'application/json');
+			xmlHttp.send(JSON.stringify(data));
+			xmlHttp.onreadystatechange = function() {
+				if(xmlHttp.status == 200 && xmlHttp.readyState === 4) {
+					callback(xmlHttp.responseText);
+				}
+			};
+		};
+
+		var getData = function() {
+			ajaxRequest({
+				url: '/messages',
+				method: 'GET',
+				callback: function(msg) {
+					var msg = JSON.parse(msg);
+					messages.innerHTML = '';
+					for(var i in msg) {
+						if(msg.hasOwnProperty(i)) {
+							var el = document.createElement('li');
+							el.innerText = msg[i].name + ': ' + msg[i].text;
+							messages.appendChild(el);
+						}
+					}
+
+					var elem = document.body;
+					elem.scrollTop = elem.scrollHeight;
+
+				}
+			});
+		};
+
+		getData();
+
+	})();
+</script>
+</html>
